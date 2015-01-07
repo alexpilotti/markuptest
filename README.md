@@ -57,11 +57,8 @@ of provided local groups.
 The following configuration parameters control the behaviour of this
 plugin:
 
-_username_
-
-Name of the cloud user.
-
-default: _Admin_
+| Option | Description | Default |
+| _username_ | Name of the cloud user | _Admin_ |
 
 _groups_
 Comma separated list of groups.
