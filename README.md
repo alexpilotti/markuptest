@@ -46,7 +46,7 @@ Currently the following plugins have been implemented for the Windows OS:
 
 ### cloudbaseinit.plugins.windows.sethostname.SetHostNamePlugin
 
-Sets the instance's hostname
+Sets the instance's hostname.
 
 
 ### cloudbaseinit.plugins.windows.createuser.CreateUserPlugin
@@ -58,7 +58,9 @@ The following configuration parameters control the behaviour of this
 plugin:
 
 _username_
-Name of the cloud user
+
+Name of the cloud user.
+
 default: _Admin_
 
 _groups_
