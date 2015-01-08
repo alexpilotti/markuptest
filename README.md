@@ -57,12 +57,10 @@ of provided local groups.
 The following configuration parameters control the behaviour of this
 plugin:
 
-| Option | Description | Default |
-| _username_ | Name of the cloud user | _Admin_ |
-
-_groups_
-Comma separated list of groups.
-Default: _Administrators_
+| Option     | Description                    | Default          |
+|------------|--------------------------------|------------------|
+| _username_ | Name of the cloud user         | _Admin_          |
+| _groups_   | Comma separated list of groups | _Administrators_ |
 
 
 ### cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin
@@ -73,21 +71,22 @@ will be generated, encrypted with the user's SSH public key and posted to the
 metadata provider (currently supported only by the OpenStack HTTP metadata
 provider).
 
-_inject_user_password_
-Can be set to false to avoid the injection of the password provided in the
-metadata.
-Default: _True_
+| Option                 | Description                                                                         | Default |         |
+|------------------------|-------------------------------------------------------------------------------------|---------|
+| _inject_user_password_ | Can be set to false to avoid the injection of the password provided in the metadata | True    |
 
 
 ### cloudbaseinit.plugins.windows.networkconfig.NetworkConfigPlugin
 
 Configures static networking.
 
-_network_adapter_
-Network adapter to configure. If not specified, the first available ethernet
+| Option            | Description                  | Default |
+|-------------------|------------------------------|---------|
+| _network_adapter_ | Network adapter to configure | _None_  |
+
+If not specified, the first available ethernet
 adapter will be chosen if it cannot be matched with the configuration provided
 in the metadata.
-Default: _None_
 
 
 ### cloudbaseinit.plugins.windows.sshpublickeys.SetUserSSHPublicKeysPlugin
@@ -122,24 +121,27 @@ See: http://www.cloudbase.it/windows-without-passwords-in-openstack/
 
 Executes any script (e.g. Powershell, CMD, etc) located in the following path:
 
-_local_scripts_path_
-Default: _None_
+| Option               | Description        | Default |
+|----------------------|--------------------|---------|
+| _local_scripts_path_ | Local scripts path | _None_  |
 
 
 ### cloudbaseinit.plugins.windows.licensing.WindowsLicensingPlugin
 
 Activates the Windows instance if the following option is True:
 
-_activate_windows_
-Default: _False_
+| Option             | Description      | Default |
+|--------------------|------------------|---------|
+| _activate_windows_ | Activate Windows | _False_ |
 
 
 ### cloudbaseinit.plugins.windows.ntpclient.NTPClientPlugin
 
 Applies NTP client info based on the DHCP server options, if available.
 
-_ntp_use_dhcp_config_
-Default: _False_
+| Option                | Description       | Default |
+|-----------------------|-------------------|---------|
+| _ntp_use_dhcp_config_ | Set NTP from DHCP | _False_ |
 
 
 ### cloudbaseinit.plugins.windows.mtu.MTUPlugin
@@ -150,8 +152,9 @@ options, if available.
 This is particularly useful for cases in which a lower MTU value is required
 for networking (e.g. OpenStack GRE Neutron Open vSwitch configurations).
 
-_mtu_use_dhcp_config_
-Default: _True_
+| Option                | Description       | Default |
+|-----------------------|-------------------|---------|
+| _mtu_use_dhcp_config_ | Set MTU from DHCP | _True_  |
 
 
 ### cloudbaseinit.plugins.windows.userdata.UserDataPlugin
@@ -219,7 +222,8 @@ by Heat / CFN templates, although Linux specific.
 
 Heat / CFN content. Written to the path provided by:
 
-_heat_config_dir_
-Default: _'C:\\cfn'_
+| Option            | Description             | Default     |
+|-------------------|-------------------------|-------------|
+| _heat_config_dir_ | Heat configuration path | _'C:\\cfn'_ |
 
 Example Heat Windows templates: https://github.com/openstack/heat-templates/tree/master/hot/Windows
