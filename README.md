@@ -42,12 +42,12 @@ Plugins
 Plugins execute actions based on the metadata obtained by the service.
 
 
-### cloudbaseinit.plugins.windows.sethostname.SetHostNamePlugin
+#### cloudbaseinit.plugins.windows.sethostname.SetHostNamePlugin
 
 Sets the instance's hostname.
 
 
-### cloudbaseinit.plugins.windows.createuser.CreateUserPlugin
+#### cloudbaseinit.plugins.windows.createuser.CreateUserPlugin
 
 Creates a local cloud user (if it does not already exist) and adds it to a set
 of provided local groups.
@@ -61,7 +61,7 @@ plugin.
 | _groups_   | Comma separated list of groups | _Administrators_ |
 
 
-### cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin
+#### cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin
 
 Sets the cloud user's password. If a password has been provided in the
 metadata during boot (user_data) it will be used, otherwise a random password
@@ -74,7 +74,7 @@ provider).
 | _inject_user_password_ | Can be set to false to avoid the injection of the password provided in the metadata | True    |
 
 
-### cloudbaseinit.plugins.windows.networkconfig.NetworkConfigPlugin
+#### cloudbaseinit.plugins.windows.networkconfig.NetworkConfigPlugin
 
 Configures static networking.
 
@@ -82,58 +82,57 @@ Configures static networking.
 |-------------------|------------------------------|---------|
 | _network_adapter_ | Network adapter to configure | _None_  |
 
-If not specified, the first available ethernet
+If _network_adapter_ is not specified, the first available ethernet
 adapter will be chosen if it cannot be matched with the configuration provided
 in the metadata.
 
 
-### cloudbaseinit.plugins.windows.sshpublickeys.SetUserSSHPublicKeysPlugin
+#### cloudbaseinit.plugins.windows.sshpublickeys.SetUserSSHPublicKeysPlugin
 
 Creates an "authorized_keys" file in the user's home directory containing the
-SSH keys provided in the metadata. Note: on Windows a SSH service needs to be
-installed to take advantage of this feature.
+SSH keys provided in the metadata.
 It is needed by the
 _cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin_ plugin.
 
 
-### cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin
+#### cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin
 
 Extends automatically a disk partition to it's maximum size. This is useful
 when booting images with different flavors.
 
 
-### cloudbaseinit.plugins.windows.winrmlistener.ConfigWinRMListenerPlugin
+#### cloudbaseinit.plugins.windows.winrmlistener.ConfigWinRMListenerPlugin
 
 Configures a WinRM HTTPS listener to allow remote management via WinRS or
 PowerShell.
 
 
-### cloudbaseinit.plugins.windows.winrmcertificateauth.ConfigWinRMCertificateAuthPlugin
+#### cloudbaseinit.plugins.windows.winrmcertificateauth.ConfigWinRMCertificateAuthPlugin
 
 Enables password-less authentication for remote management via WinRS or
 PowerShell.
 See: http://www.cloudbase.it/windows-without-passwords-in-openstack/
 
 
-### cloudbaseinit.plugins.windows.localscripts.LocalScriptsPlugin
+#### cloudbaseinit.plugins.windows.localscripts.LocalScriptsPlugin
 
-Executes any script (e.g. Powershell, CMD, etc) located in the following path:
+Executes any script (e.g. Powershell, CMD, etc) located in the following path.
 
 | Option               | Description        | Default |
 |----------------------|--------------------|---------|
 | _local_scripts_path_ | Local scripts path | _None_  |
 
 
-### cloudbaseinit.plugins.windows.licensing.WindowsLicensingPlugin
+#### cloudbaseinit.plugins.windows.licensing.WindowsLicensingPlugin
 
-Activates the Windows instance if the following option is True:
+Activates the Windows instance if the following option is True.
 
 | Option             | Description      | Default |
 |--------------------|------------------|---------|
 | _activate_windows_ | Activate Windows | _False_ |
 
 
-### cloudbaseinit.plugins.windows.ntpclient.NTPClientPlugin
+#### cloudbaseinit.plugins.windows.ntpclient.NTPClientPlugin
 
 Applies NTP client info based on the DHCP server options, if available.
 
@@ -142,9 +141,9 @@ Applies NTP client info based on the DHCP server options, if available.
 | _ntp_use_dhcp_config_ | Set NTP from DHCP | _False_ |
 
 
-### cloudbaseinit.plugins.windows.mtu.MTUPlugin
+#### cloudbaseinit.plugins.windows.mtu.MTUPlugin
 
-Sets the network interfaces MTU based on the value probived by the DHCP server
+Sets the network interfaces MTU based on the value provided by the DHCP server
 options, if available.
 
 This is particularly useful for cases in which a lower MTU value is required
@@ -155,23 +154,23 @@ for networking (e.g. OpenStack GRE Neutron Open vSwitch configurations).
 | _mtu_use_dhcp_config_ | Set MTU from DHCP | _True_  |
 
 
-### cloudbaseinit.plugins.windows.userdata.UserDataPlugin
+#### cloudbaseinit.plugins.windows.userdata.UserDataPlugin
 
 Executes custom scripts provided with the user_data metadata as plain text or
 compressed with Gzip.
 
 Supported formats:
 
-#### Windows batch
+##### Windows batch
 
 The file is executed in a cmd.exe shell (can be changed with the COMSPEC
 environment variable). The user_data first line must be:
 
     rem cmd
 
-#### PowerShell
+##### PowerShell
 
-The user_data first line must be
+The user_data first line must be:
 
     #ps1_sysnative
 
@@ -179,7 +178,7 @@ or for a x86 PowerShell execution:
 
     #ps1_x86
 
-#### Bash
+##### Bash
 
 A bash shell needs to be installed in the system and available in the PATH in
 order to use this feature. The user_data first line must start with:
@@ -190,38 +189,38 @@ e.g.:
 
     #!/bin/bash
 
-### cloud-config
+#### cloud-config
 
-cloud-config YAML metadata as supported by cloud-init, excluding Linux specific
-content. The user_data first line must be:
+Cloud-config YAML configuration as supported by cloud-init, excluding Linux
+specific content. The user_data first line must be:
 
     #cloud-config
 
 Note: currently only local file creation is supported.
 
 
-### Multi-part userdata content
+#### Multi-part userdata content
 
 MIME multi-part userdata is supported. The content will ne handled based on the
 content type.
 
 
-#### text/x-shellscript
+##### text/x-shellscript
 
 Any script to be executed: PowerShell, CMD, Bash or Python.
 
 
-#### text/part-handler
+##### text/part-handler
 
 A script that can manage other content type parts. This is used in particular
 by Heat / CFN templates, although Linux specific.
 
-#### text/x-cfninitdata
+##### text/x-cfninitdata
 
 Heat / CFN content. Written to the path provided by:
 
 | Option            | Description             | Default     |
 |-------------------|-------------------------|-------------|
-| _heat_config_dir_ | Heat configuration path | _C:\\cfn_ |
+| _heat_config_dir_ | Heat configuration path | _C:\\cfn_   |
 
 Example Heat Windows templates: https://github.com/openstack/heat-templates/tree/master/hot/Windows
