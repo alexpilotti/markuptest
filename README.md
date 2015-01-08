@@ -41,8 +41,6 @@ Plugins
 
 Plugins execute actions based on the metadata obtained by the service.
 
-Currently the following plugins have been implemented for the Windows OS:
-
 
 ### cloudbaseinit.plugins.windows.sethostname.SetHostNamePlugin
 
@@ -55,7 +53,7 @@ Creates a local cloud user (if it does not already exist) and adds it to a set
 of provided local groups.
 
 The following configuration parameters control the behaviour of this
-plugin:
+plugin.
 
 | Option     | Description                    | Default          |
 |------------|--------------------------------|------------------|
@@ -71,7 +69,7 @@ will be generated, encrypted with the user's SSH public key and posted to the
 metadata provider (currently supported only by the OpenStack HTTP metadata
 provider).
 
-| Option                 | Description                                                                         | Default |         |
+| Option                 | Description                                                                         | Default |
 |------------------------|-------------------------------------------------------------------------------------|---------|
 | _inject_user_password_ | Can be set to false to avoid the injection of the password provided in the metadata | True    |
 
@@ -224,6 +222,6 @@ Heat / CFN content. Written to the path provided by:
 
 | Option            | Description             | Default     |
 |-------------------|-------------------------|-------------|
-| _heat_config_dir_ | Heat configuration path | _'C:\\cfn'_ |
+| _heat_config_dir_ | Heat configuration path | _C:\\cfn_ |
 
 Example Heat Windows templates: https://github.com/openstack/heat-templates/tree/master/hot/Windows
