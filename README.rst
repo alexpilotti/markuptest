@@ -61,6 +61,7 @@ plugin.
 | Option     | Description                    | Default          |
 +============+================================+==================+
 | *username* | Name of the cloud user         | *Admin*          |
++------------+--------------------------------+------------------+
 | *groups*   | Comma separated list of groups | *Administrators* |
 +------------+--------------------------------+------------------+
 
