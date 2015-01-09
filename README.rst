@@ -60,8 +60,8 @@ plugin.
 +------------+--------------------------------+------------------+
 | Option     | Description                    | Default          |
 +============+================================+==================+
-| _username_ | Name of the cloud user         | _Admin_          |
-| _groups_   | Comma separated list of groups | _Administrators_ |
+| *username* | Name of the cloud user         | *Admin*          |
+| *groups*   | Comma separated list of groups | *Administrators* |
 +------------+--------------------------------+------------------+
 
 
@@ -77,7 +77,7 @@ provider).
 +------------------------+-------------------------------------------------------------------------------------+---------+
 | Option                 | Description                                                                         | Default |
 +========================+=====================================================================================+=========+
-| _inject_user_password_ | Can be set to false to avoid the injection of the password provided in the metadata | True    |
+| *inject_user_password* | Can be set to false to avoid the injection of the password provided in the metadata | *True*  |
 +------------------------+-------------------------------------------------------------------------------------+---------+
 
 
@@ -89,7 +89,7 @@ Configures static networking.
 +-------------------+------------------------------+---------+
 | Option            | Description                  | Default |
 +===================+==============================+=========+
-| _network_adapter_ | Network adapter to configure | _None_  |
+| *network_adapter* | Network adapter to configure | *None*  |
 +-------------------+------------------------------+---------+
 
 If _network_adapter_ is not specified, the first available ethernet
@@ -136,7 +136,7 @@ Executes any script (e.g. Powershell, CMD, etc) located in the following path.
 +----------------------+--------------------+---------+
 | Option               | Description        | Default |
 +======================+====================+=========+
-| _local_scripts_path_ | Local scripts path | _None_  |
+| *local_scripts_path* | Local scripts path | *None*  |
 +----------------------+--------------------+---------+
 
 
@@ -148,7 +148,7 @@ Activates the Windows instance if the following option is True.
 +--------------------+------------------+---------+
 | Option             | Description      | Default |
 +====================+==================+=========+
-| _activate_windows_ | Activate Windows | _False_ |
+| *activate_windows* | Activate Windows | *False* |
 +--------------------+------------------+---------+
 
 
@@ -160,7 +160,7 @@ Applies NTP client info based on the DHCP server options, if available.
 +-----------------------+-------------------+---------+
 | Option                | Description       | Default |
 +=======================+===================+=========+
-| _ntp_use_dhcp_config_ | Set NTP from DHCP | _False_ |
+| *ntp_use_dhcp_config* | Set NTP from DHCP | *False* |
 +-----------------------+-------------------+---------+
 
 
@@ -176,7 +176,7 @@ for networking (e.g. OpenStack GRE Neutron Open vSwitch configurations).
 +-----------------------+-------------------+---------+
 | Option                | Description       | Default |
 +=======================+===================+=========+
-| _mtu_use_dhcp_config_ | Set MTU from DHCP | _True_  |
+| *mtu_use_dhcp_config* | Set MTU from DHCP | *True*  |
 +-----------------------+-------------------+---------+
 
 
@@ -192,7 +192,7 @@ Windows batch
 """""""""""""
 
 The file is executed in a cmd.exe shell (can be changed with the COMSPEC
-environment variable). The user_data first line must be:
+environment variable). The *user_data* first line must be:
 
     rem cmd
 
@@ -257,7 +257,7 @@ Heat / CFN content. Written to the path provided by:
 +-------------------+-------------------------+-------------+
 | Option            | Description             | Default     |
 +===================+=========================+=============+
-| _heat_config_dir_ | Heat configuration path | _C:\\cfn_   |
+| *heat_config_dir* | Heat configuration path | *C:\\cfn*   |
 +-------------------+-------------------------+-------------+
 
 Example Heat Windows templates: https://github.com/openstack/heat-templates/tree/master/hot/Windows
