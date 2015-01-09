@@ -55,13 +55,16 @@ of provided local groups.
 The following configuration parameters control the behaviour of this
 plugin.
 
++------------+--------------------------------+------------------+
 | Option     | Description                    | Default          |
 |------------|--------------------------------|------------------|
 | _username_ | Name of the cloud user         | _Admin_          |
 | _groups_   | Comma separated list of groups | _Administrators_ |
++------------+--------------------------------+------------------+
 
 
-#### cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin
+cloudbaseinit.plugins.windows.setuserpassword.SetUserPasswordPlugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sets the cloud user's password. If a password has been provided in the
 metadata during boot (user_data) it will be used, otherwise a random password
@@ -77,6 +80,7 @@ provider).
 #### cloudbaseinit.plugins.windows.networkconfig.NetworkConfigPlugin
 
 Configures static networking.
+
 
 | Option            | Description                  | Default |
 |-------------------|------------------------------|---------|
