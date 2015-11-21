@@ -1,54 +1,85 @@
-Open vSwitch Windows installer
-==============================
+PyMI - Windows Management Infrastructure API for Python
+=======================================================
 
-This project generates a MSI installer for Open vSwitch on Windows, including
-CLI executables, services and the Hyper-V vswitch forwarding extension.
+This project provides a Python native module wrapper over the Windows
+Management Infrastructure (MI) API [#miapi]_.
 
-Requirements
+Works with Python 2.7 and 3.x on any Windows version which supports the MI API,
+both x86 and x64.
+
+It includes also a drop-in replacement module for the Python WMI [#pywmi]_ module,
+proving much faster execution times and no dependency on pywin32.
+
+Installation
 ------------
 
-Visual Studio 2013 community, professional, premium or ultimate edition
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Pip is the preferred way to install PyMI. Pre-compiled binary wheels are
+available on Pypi [#pymipypi]_: ::
 
-Visual Studio Community 2013 is freely available at:
-https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
+    pip install PyMI
 
-WiX Toolset 3.9
-^^^^^^^^^^^^^^^
+Usage
+-----
 
-Download and install from:
-http://wixtoolset.org/releases/v3.9/stable
+This project can be used either with a lower level module that reflects the
+underlying MI API structure or with the higher level (and slightly slower)
+WMI module replacement.
 
-Microsoft_VC120_CRT_x86.msm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+MI module basic usage
+^^^^^^^^^^^^^^^^^^^^^
 
-This Windows merge module is available with Visual Studio and contains the
-Visual C++ 2013 x86 runtime redistributables files.
-Copy the file in the *ovs-windows-installer* directory.
+Here's a simple example which enumerates all processes and kills any instance of
+"KillerRabbitOfCaerbannog.exe". ::
 
-Open vSwitch binaries
----------------------
+    import mi
 
-Build the Open vSwitch project and copy:
+    with mi.Application() as a:
+        with a.create_session(protocol=mi.PROTOCOL_WMIDCOM) as s:
+            proc_name = u'notepad.exe'
+            with s.exec_query(
+                    u"root\\cimv2", u"select * from Win32_Process") as q:
+                i = q.get_next_instance()
+                while i is not None:
+                    if i[u'name'].lower() == u"KillerRabbitOfCaerbannog.exe":
+                        cls = i.get_class()
+                        # Prepare parameters
+                        params = a.create_method_params(cls, u"Terminate")
+                        # Exit code
+                        params['reason'] = 10
+                        # Invoke method
+                        with s.invoke_method(i, u"Terminate", params) as op:
+                            op.get_next_instance()
+                    i = q.get_next_instance()
 
-* *ovs-vswitchd.exe*, *ovsdb-server.exe* and *vswitch.ovsschema* in the
-  *Services* directory
-* *openvswitch.sys*, *openvswitch.cat* and *openvswitch.inf* in the *Driver*
-  directory
-* CLI executables and depending DLLs in the *Binaries* directory 
-* *OVS.psm1* in the *ovs-windows-installer* directory
-* PDB symbols in the *Symbols* directory
+WMI module basic usage
+^^^^^^^^^^^^^^^^^^^^^^
 
-Note: the kernel driver needs to be signed.
+And here's the same example written using the *WMI* [#pywmi]_ module replacement,
+which provides a simpler and higher level interface over the *mi* module: ::
 
-Build instructions
-------------------
+    import wmi
 
-Build the solution in the Visual Studio IDE or via command line:
-   
-    msbuild ovs-windows-installer.sln /p:Platform=x86 /p:Configuration=Release
+    conn = wmi.WMI()
+    for p in conn.Win32_Process():
+        if p.Name == u"KillerRabbitOfCaerbannog.exe":
+            p.Terminate(reason=10)
 
-Silent installation
--------------------
 
-    msiexec /i OpenvSwitch.msi ADDLOCAL=OpenvSwitchCLI,OpenvSwitchDriver /l*v log.txt
+Build
+-----
+
+Open the provided *PyMI.sln* solution in Visual Studio 2015 [#VS2015]_, choose
+your target Python version and platform and build. Wheel packages are
+automatically generated in the *dist* folder for release builds.
+
+Note: the target Python version must be present. The Python path can be
+customized by setting the corresponding PythonDir* user macro,
+e.g. *PythonDir_34_x64*.
+
+References
+----------
+
+.. [#miapi] MI API https://msdn.microsoft.com/en-us/library/hh404805(v=vs.85).aspx
+.. [#pywmi] Python WMI module https://pypi.python.org/pypi/WMI
+.. [#pymipypi] PyMI on Pypi https://pypi.python.org/pypi/PyMI
+.. [#vs2015] Visual Studio 2015 download https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
