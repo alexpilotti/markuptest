@@ -1,85 +1,122 @@
-PyMI - Windows Management Infrastructure API for Python
-=======================================================
+Python bindings to the Coriolis migration API
+=============================================
 
-This project provides a Python native module wrapper over the Windows
-Management Infrastructure (MI) API [#miapi]_.
+* License: Apache License, Version 2.0
+* `PyPi`_ - package installation
 
-Works with Python 2.7 and 3.x on any Windows version which supports the MI API,
-both x86 and x64.
+.. _PyPi: https://pypi.python.org/pypi/python-coriolisclient
 
-It includes also a drop-in replacement module for the Python WMI [#pywmi]_ module,
-proving much faster execution times and no dependency on pywin32.
+Command-line API
+----------------
 
-Installation
-------------
+The Coriolis Command-line API offers an interface over the REST API provided by
+the Coriolis migration service.
 
-Pip is the preferred way to install PyMI. Pre-compiled binary wheels are
-available on Pypi [#pymipypi]_: ::
+Coriolis uses Keystone for identity management. Credentials and endpoints can
+be provided via environment variables or command line parameters in the same
+way supported by most OpenStack command line interface (CLI) tools, e.g.::
 
-    pip install PyMI
+    export OS_AUTH_URL=http://example.com:5000/v2.0
+    export OS_USERNAME=admin
+    export OS_PASSWORD=blahblah
+    export OS_TENANT_NAME=admin
 
-Usage
------
+Secrets
+-------
 
-This project can be used either with a lower level module that reflects the
-underlying MI API structure or with the higher level (and slightly slower)
-WMI module replacement.
+In order to migrate virtual workloads, Coriolis requires access to external
+environments, e.g. VMware vSphere, AWS, Azure, etc.
 
-MI module basic usage
-^^^^^^^^^^^^^^^^^^^^^
+Connection details including credentials can be stored in Barbican,
+OpenStack's project for secure storage and secrets management::
 
-Here's a simple example which enumerates all processes and kills any instance of
-"KillerRabbitOfCaerbannog.exe". ::
+    VMWARE_CONN_INFO='{"host": "example.com", "port": 443, "username":
+    "user@example.com", "password": "blahblah", "allow_untrusted": true}'
 
-    import mi
+    barbican secret store --payload "$VMWARE_CONN_INFO" \
+    --payload-content-type "text/plain"
 
-    with mi.Application() as a:
-        with a.create_session(protocol=mi.PROTOCOL_WMIDCOM) as s:
-            proc_name = u'notepad.exe'
-            with s.exec_query(
-                    u"root\\cimv2", u"select * from Win32_Process") as q:
-                i = q.get_next_instance()
-                while i is not None:
-                    if i[u'name'].lower() == u"KillerRabbitOfCaerbannog.exe":
-                        cls = i.get_class()
-                        # Prepare parameters
-                        params = a.create_method_params(cls, u"Terminate")
-                        # Exit code
-                        params['reason'] = 10
-                        # Invoke method
-                        with s.invoke_method(i, u"Terminate", params) as op:
-                            op.get_next_instance()
-                    i = q.get_next_instance()
-
-WMI module basic usage
-^^^^^^^^^^^^^^^^^^^^^^
-
-And here's the same example written using the *WMI* [#pywmi]_ module replacement,
-which provides a simpler and higher level interface over the *mi* module: ::
-
-    import wmi
-
-    conn = wmi.WMI()
-    for p in conn.Win32_Process():
-        if p.Name == u"KillerRabbitOfCaerbannog.exe":
-            p.Terminate(reason=10)
+The returned ``Secret href`` is the id of the secret to be referenced in order
+to access its content.
 
 
-Build
------
+Providers
+---------
 
-Open the provided *PyMI.sln* solution in Visual Studio 2015 [#VS2015]_, choose
-your target Python version and platform and build. Wheel packages are
-automatically generated in the *dist* folder for release builds.
+A ``provider`` is a registered extension that supports a given cloud or
+virtual environment, like OpenStack, Azure, AWS, VMware vSphere, etc.
 
-Note: the target Python version must be present. The Python path can be
-customized by setting the corresponding PythonDir* user macro,
-e.g. *PythonDir_34_x64*.
+There are two types of providers: origin and destination. For example, when
+migrating a VM from VMware vSphere to OpenStack, ``wmware_vsphere`` is the
+origin and ``openstack`` the destination.
 
-References
+Target environment
+------------------
+
+A target environment defines a set of provider specific parameters that can
+override default options set by the Coriolis work processes. For exammple in the
+case of the OpenStack's provider, the following JSON formatted options allow to
+specify a custom mapping between origin and Neutron networks, along with a
+custom worker image name::
+
+    TARGET_ENV='{"network_map": {"VM Network Local": "public", "VM Network":
+    "private"}, "flavor_name": "m1.small", "migr_image_name": "Nano"}'
+
+
+Starting a migration
+--------------------
+
+Various types of virtual vorkloads can be migrated, including instances,
+templates, network configurations and storage.
+
+The following command migrates a virtual machine named ``VM1`` from VMware
+vSphere to OpenStack::
+
+    coriolis migration create --origin-provider vmware_vsphere
+    --destination-provider openstack --origin-connection-secret $SECRET_REF
+    --instance VM1 --target-environment "$TARGET_ENV"
+
+List all migrations
+-------------------
+
+The following command retrieves a list of all migrations, including their
+status::
+
+    coriolis migration list
+
+Show migration details
+----------------------
+
+Migrations can be fairly long running tasks. This command is very useful to
+retrieve the current status and progress updates::
+
+    coriolis migration show <migration_id>
+
+Cancel a migration
+------------------
+
+A pending or running migration can be cancelled anytime::
+
+    coriolis migration cancel <migration_id>
+
+Delete a migation
+-----------------
+
+Only migrations in pending or error state can be deleted. Running migrations
+need to be first cancelled.
+
+    coriolis migration delete <migration_id>
+
+
+Python API
 ----------
 
-.. [#miapi] MI API https://msdn.microsoft.com/en-us/library/hh404805(v=vs.85).aspx
-.. [#pywmi] Python WMI module https://pypi.python.org/pypi/WMI
-.. [#pymipypi] PyMI on Pypi https://pypi.python.org/pypi/PyMI
-.. [#vs2015] Visual Studio 2015 download https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
+The Python interface matches the underlying REST API, it's used by the CLI and
+can be used in Python based projects that need ::
+
+    >>> from coriolisclient import client
+    >>> c = client.Client(session=keystone_session)
+    >>> c.migrations.list()
+    [...]
+    >>> c.migrations.get(migration_id)
+    [...]
